@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="requests-console" target="SYSTEM_OUT">
+            <PatternLayout>
+                <pattern>%d %p: %msg%n</pattern>
+            </PatternLayout>
+        </Console>
+
+        <File name="requests-file" fileName="./logs/requests.log">
+            <PatternLayout>
+                <pattern>%d %p: %msg%n</pattern>
+            </PatternLayout>
+        </File>
+
+        <File name="todo-file" fileName="./logs/todo.log">
+            <PatternLayout>
+                <pattern>%d %p: %msg%n</pattern>
+            </PatternLayout>
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="request-logger" level="info">
+            <AppenderRef ref="requests-file" />
+            <AppenderRef ref="requests-console" />
+        </Logger>
+    </Loggers>
+
+    <Loggers>
+        <Logger name="todo-logger" level="info">
+            <AppenderRef ref="todo-file" />
+        </Logger>
+    </Loggers>
+
+</Configuration>

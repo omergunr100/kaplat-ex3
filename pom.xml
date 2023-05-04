@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.mta.server</groupId>
-    <artifactId>kaplat-ex3</artifactId>
+    <artifactId>kaplat-ex4</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>kaplat-ex3</name>
     <description>kaplat-ex3</description>

@@ -1,4 +1,4 @@
-package com.mta.server.main;
+package com.mta.server.data;
 
 public class Message {
     public Object result;
