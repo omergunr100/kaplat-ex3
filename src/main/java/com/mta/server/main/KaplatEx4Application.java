@@ -17,7 +17,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @SpringBootApplication
 @RestController
@@ -102,30 +106,21 @@ public class KaplatEx4Application {
     @GetMapping("/todo/content")
     public ResponseEntity<Message> getContent(@RequestParam String status, @RequestParam(required = false) String sortBy){
         Instant start = Instant.now();
-        Todo[] todoArray;
+        List<Todo> todoCopy;
         Message message = new Message();
-//        if(todos.size() == 0){
-//            message.result = "[]";
-//            logRequest(start, "/content", "GET");
-//            return ResponseEntity.status(200).body(message);
-//        }
 
-        Object[] temp;
         switch (status){
             case "ALL":
-                todoArray = Arrays.copyOf(todos.toArray(), todos.size(), Todo[].class);
+                todoCopy = todos.stream().map(todo -> (Todo)todo).collect(Collectors.toList());
                 break;
             case "PENDING":
-                temp = todos.stream().filter(todo -> ((Todo)todo).status == Status.PENDING).toArray();
-                todoArray = Arrays.copyOf(temp, temp.length, Todo[].class);
+                todoCopy = todos.stream().map(todo -> (Todo)todo).filter(todo -> todo.status.equals(Status.PENDING)).collect(Collectors.toList());
                 break;
             case "LATE":
-                temp = todos.stream().filter(todo -> ((Todo)todo).status == Status.LATE).toArray();
-                todoArray = Arrays.copyOf(temp, temp.length, Todo[].class);
+                todoCopy = todos.stream().map(todo -> (Todo)todo).filter(todo -> todo.status.equals(Status.LATE)).collect(Collectors.toList());
                 break;
             case "DONE":
-                temp = todos.stream().filter(todo -> ((Todo)todo).status == Status.DONE).toArray();
-                todoArray = Arrays.copyOf(temp, temp.length, Todo[].class);
+                todoCopy = todos.stream().map(todo -> (Todo)todo).filter(todo -> todo.status.equals(Status.DONE)).collect(Collectors.toList());
                 break;
             default:
                 message.errorMessage = "Error: Invalid status";
@@ -139,13 +134,13 @@ public class KaplatEx4Application {
 
         switch (sortBy){
             case "ID":
-                Arrays.sort(todoArray, (todo1, todo2) -> ((Todo)todo1).id - ((Todo)todo2).id);
+                todoCopy.sort((todo1, todo2) -> todo1.id - todo2.id);
                 break;
             case "DUE_DATE":
-                Arrays.sort(todoArray, (todo1, todo2) -> (int)(todo1.dueDate - todo2.dueDate));
+                todoCopy.sort((todo1, todo2) -> (int)(todo1.dueDate - todo2.dueDate));
                 break;
             case "TITLE":
-                Arrays.sort(todoArray, (todo1, todo2) -> todo1.title.compareTo(todo2.title));
+                todoCopy.sort((todo1, todo2) -> todo1.title.compareTo(todo2.title));
                 break;
             default:
                 message.errorMessage = "Error: Invalid sortBy";
@@ -154,11 +149,10 @@ public class KaplatEx4Application {
                 return ResponseEntity.status(400).body(message);
         }
 
-        List<Todo> list = new ArrayList<>(Arrays.asList(todoArray));
-        message.result = list;
+        message.result = todoCopy;
         logRequest(start, "/todo/content", "GET");
         todoLogger.info("Extracting todos content. Filter: "+status+" | Sorting by: "+sortBy);
-        todoLogger.debug("There are a total of "+todos.size()+" todos in the system. The result holds "+list.size()+" todos");
+        todoLogger.debug("There are a total of "+todos.size()+" todos in the system. The result holds "+todoCopy.size()+" todos");
         return ResponseEntity.status(200).body(message);
     }
 
@@ -166,13 +160,14 @@ public class KaplatEx4Application {
     public ResponseEntity<Message> putTodoStatus(@RequestParam int id, @RequestParam String status){
         Instant start = Instant.now();
         Message message = new Message();
+        todoLogger.info("Update TODO id ["+id+"] state to "+status);
         if(todos.stream().noneMatch(todo -> ((Todo)todo).id == id)){
             message.errorMessage = "Error: no such TODO with id " + id;
             todoLogger.error(message.errorMessage);
             logRequest(start, "/todo", "PUT");
             return ResponseEntity.status(404).body(message);
         }
-        Todo todo = (Todo)todos.stream().filter(todo1 -> ((Todo)todo1).id == id).toArray()[0];
+        Todo todo = (Todo)todos.stream().filter(todo1 -> ((Todo)todo1).id == id).findFirst().get();
         Status oldStatus = todo.status;
         switch (status){
             case "PENDING":
@@ -192,7 +187,6 @@ public class KaplatEx4Application {
         }
         message.result = oldStatus.toString();
         logRequest(start, "/todo", "PUT");
-        todoLogger.info("Update TODO id ["+todo.id+"] state to "+status);
         todoLogger.debug("Todo id ["+todo.id+"] state change: "+oldStatus.toString()+" --> "+status);
         return ResponseEntity.status(200).body(message);
     }
