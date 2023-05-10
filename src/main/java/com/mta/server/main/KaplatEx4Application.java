@@ -97,8 +97,8 @@ public class KaplatEx4Application {
             return ResponseEntity.status(200).body(message);
         } catch (IllegalArgumentException e){
             message.errorMessage = "Error: Invalid status";
-            todoLogger.error(message.errorMessage);
-            logRequest(start, "/todo/size", "GET");
+//            todoLogger.error(message.errorMessage);
+//            logRequest(start, "/todo/size", "GET");
             return ResponseEntity.status(400).body(message);
         }
     }
@@ -124,8 +124,8 @@ public class KaplatEx4Application {
                 break;
             default:
                 message.errorMessage = "Error: Invalid status";
-                todoLogger.error(message.errorMessage);
-                logRequest(start, "/todo/content", "GET");
+//                todoLogger.error(message.errorMessage);
+//                logRequest(start, "/todo/content", "GET");
                 return ResponseEntity.status(400).body(message);
         }
 
@@ -144,8 +144,8 @@ public class KaplatEx4Application {
                 break;
             default:
                 message.errorMessage = "Error: Invalid sortBy";
-                todoLogger.error(message.errorMessage);
-                logRequest(start, "/todo/content", "GET");
+//                todoLogger.error(message.errorMessage);
+//                logRequest(start, "/todo/content", "GET");
                 return ResponseEntity.status(400).body(message);
         }
 
@@ -181,8 +181,8 @@ public class KaplatEx4Application {
                 break;
             default:
                 message.errorMessage = "Error: Invalid status";
-                todoLogger.error(message.errorMessage);
-                logRequest(start, "/todo", "PUT");
+//                todoLogger.error(message.errorMessage);
+//                logRequest(start, "/todo", "PUT");
                 return ResponseEntity.status(400).body(message);
         }
         message.result = oldStatus.toString();
@@ -211,9 +211,8 @@ public class KaplatEx4Application {
     }
 
     @GetMapping("/logs/level")
-    public ResponseEntity<Message> getLoggerLevel(@RequestParam(name="logger-name") String loggerName){
+    public ResponseEntity<String> getLoggerLevel(@RequestParam(name="logger-name") String loggerName){
         Instant start = Instant.now();
-        Message message = new Message();
         Logger logger = null;
 
         switch (loggerName){
@@ -224,13 +223,11 @@ public class KaplatEx4Application {
                 logger = requestLogger;
                 break;
             default:
-                message.errorMessage = "Error: Invalid logger name!";
                 logRequest(start, "/logs/level", "GET");
-                return ResponseEntity.status(400).body(message);
+                return ResponseEntity.status(200).body("Error: Invalid logger name!");
         }
-        message.result = LogManager.getLogger(loggerName).getLevel().toString();
         logRequest(start, "/logs/level", "GET");
-        return ResponseEntity.status(200).body(message);
+        return ResponseEntity.status(200).body(LogManager.getLogger(loggerName).getLevel().toString());
     }
 
     @PutMapping("/logs/level")
@@ -249,7 +246,7 @@ public class KaplatEx4Application {
             default:
                 message.errorMessage = "Error: Invalid logger name!";
                 logRequest(start, "/logs/level", "PUT");
-                return ResponseEntity.status(400).body(message);
+                return ResponseEntity.status(200).body(message);
         }
 
         Level setLevel = null;
@@ -266,7 +263,7 @@ public class KaplatEx4Application {
             default:
                 message.errorMessage = "Error: Invalid level!";
                 logRequest(start, "/logs/level", "PUT");
-                return ResponseEntity.status(400).body(message);
+                return ResponseEntity.status(200).body(message);
         }
 
         Configurator.setLevel(logger, setLevel);
