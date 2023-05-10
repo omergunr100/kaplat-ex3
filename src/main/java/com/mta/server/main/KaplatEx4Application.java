@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -160,6 +159,7 @@ public class KaplatEx4Application {
     public ResponseEntity<Message> putTodoStatus(@RequestParam int id, @RequestParam String status){
         Instant start = Instant.now();
         Message message = new Message();
+        ThreadContext.put("requestCounter", requestCounter.toString());
         todoLogger.info("Update TODO id ["+id+"] state to "+status);
         if(todos.stream().noneMatch(todo -> ((Todo)todo).id == id)){
             message.errorMessage = "Error: no such TODO with id " + id;
