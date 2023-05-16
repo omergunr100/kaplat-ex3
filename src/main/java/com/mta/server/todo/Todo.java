@@ -1,14 +1,13 @@
-package com.mta.server.main;
+package com.mta.server.todo;
 
-import java.util.Date;
-import java.util.Objects;
+import com.mta.server.data.Status;
 
-public class Todo extends TodoShell{
+public class Todo extends TodoShell {
     public static int idCounter = 1;
     public int id;
     public Status status;
 
-    Todo(TodoShell todoShell){
+    public Todo(TodoShell todoShell){
         super(todoShell);
         this.id = idCounter++;
         this.status = Status.PENDING;
