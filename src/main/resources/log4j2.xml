@@ -7,13 +7,13 @@
             </PatternLayout>
         </Console>
 
-        <File name="requests-file" fileName="./logs/requests.log">
+        <File name="requests-file" fileName="./logs/requests.log" append="false">
             <PatternLayout>
                 <pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %p: %msg | request #%X{requestCounter}%n</pattern>
             </PatternLayout>
         </File>
 
-        <File name="todo-file" fileName="./logs/todo.log">
+        <File name="todo-file" fileName="./logs/todo.log" append="false">
             <PatternLayout>
                 <pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %p: %msg | request #%X{requestCounter}%n</pattern>
             </PatternLayout>
